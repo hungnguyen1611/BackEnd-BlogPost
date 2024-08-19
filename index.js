@@ -1,17 +1,25 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const connectDB = require('./config/db');
+
+const postRoutes = require('./routes/posts');
+const commentRoutes = require('./routes/comments');
+
+const mongodb = require('./config/db');
 
 const app = express();
-connectDB();
 
+
+mongodb();
+
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Routes
-app.use('/api/posts', require('./routes/posts'));
-app.use('/api/comments', require('./routes/comments'));
 
-const PORT = process.env.PORT || 5000; 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentRoutes);
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Server running on port ${port}`));
